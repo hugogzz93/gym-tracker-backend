@@ -1,10 +1,12 @@
 module Types
   class MutationType < Types::BaseObject
-    # TODO: remove me
-    field :test_field, String, null: false,
-      description: "An example field added by the generator"
-    def test_field
-      "Hello World"
+
+    field :intake, Mutations::IntakeOps, null: false do
+      argument :id, ID, required: false
+    end
+
+    def intake(id: nil)
+      id ? Intake.find(id) : Mutations::IntakeOps
     end
   end
 end
