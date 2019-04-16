@@ -50,6 +50,7 @@ gem 'graphiql-rails'
 gem 'graphql-rails_logger'
 gem 'rubocop'
 gem 'rack-cors'
+gem 'httparty'
 group :development, :test do
   gem 'rspec-rails', '~> 3.8'
   gem 'ffaker', '~> 2.2'

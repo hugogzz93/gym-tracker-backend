@@ -4,6 +4,8 @@ module Types
     belongs_to :user
 
     field :id, ID, null: false
+    field :ndbid, String, null: false
     field :grams, Integer, null: false
+    field :nutrients, [ NutrientType ], null: false
   end
 end

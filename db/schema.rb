@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 2019_04_15_030511) do
   enable_extension "plpgsql"
 
   create_table "intakes", force: :cascade do |t|
-    t.integer "ndbid", null: false
+    t.string "ndbid", null: false
     t.integer "grams", default: 0, null: false
     t.bigint "user_id"
     t.datetime "created_at", null: false
