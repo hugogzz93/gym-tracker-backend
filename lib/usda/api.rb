@@ -28,24 +28,37 @@ end
 module USDA
   class Api
     include Singleton
+    STANDARD_SIZE = 100
 
     @api_key = Rails.application.credentials.usda_db_api_key
     @base_url =  'https://api.nal.usda.gov/ndb/V2/reports'
     # '?ndbno=01009&ndbno=01009&ndbno=45202763&ndbno=35193&type=b&format=json&api_key=DEMO_KEY'
 
     class << self
-      def report(ids)
-        url = build_req_url(ids: ids)
+      def single_report(intake)
+        url = build_req_url(ids: [intake.ndbid])
+        res = fetch(url)
+        res['foods'].first['food']
+      end
+
+      def report(intakes)
+        url = build_req_url(ids: intakes.map(&:ndbid).uniq)
+        res = fetch(url)
+
+        foods = res['foods'].map do |pack|
+          food = pack['food'].tap do |food|
+            food['grams'] = intakes.where(ndbid: food['desc']['ndbno']).sum(:grams)
+          end
+        end
+
+        { foods: foods, total: sum(foods) }
+      end
+
+      def fetch(url)
         response = HTTParty.get(url)
-
         res = JSON.parse(response.body)
-        return if(res['error']) 
-
-        foods = res['foods'].map { |f| f['food'] }
-        {
-          foods: foods,
-          total: sum(foods)
-        }
+        throw 'Error' if(res['error']) 
+        res
       end
 
       def sum(foods)
@@ -53,11 +66,14 @@ module USDA
         foods.each do |food|
           food['nutrients'].each do |n|
             sum = totals[n['nutrient_id']]
+            # if(n['nutrient_id'] == '255') 
+            #   debugger
+            # end
             if sum
               throw 'invalid unit' if sum['unit'] != n['unit']
-              sum['value'] += n['value'].to_f
+              sum['value'] += n['value'].to_f * food['grams'].to_f / STANDARD_SIZE
             else
-              sum = n.tap {|x| x['value'] = x['value'].to_f }
+              sum = n.tap {|x| x['value'] = x['value'].to_f * food['grams'].to_f / STANDARD_SIZE }
             end
             totals[n['nutrient_id']] = sum
           end

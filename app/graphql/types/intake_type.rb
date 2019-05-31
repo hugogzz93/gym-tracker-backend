@@ -5,7 +5,8 @@ module Types
 
     field :id, ID, null: false
     field :ndbid, String, null: false
+    field :name, String, null: false
     field :grams, Integer, null: false
-    field :nutrients, [ NutrientType ], null: false
+    # field :nutrients, [ NutrientType ], null: false
   end
 end

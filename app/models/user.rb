@@ -3,4 +3,5 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :intakes, dependent: :destroy
+  has_many :nutrient_intakes, dependent: :destroy
 end
