@@ -19,6 +19,7 @@ Bundler.require(*Rails.groups)
 
 module GymTrackerBackend
   class Application < Rails::Application
+    config.time_zone = 'America/Monterrey'
     config.eager_load_paths << "#{Rails.root}/lib"
     config.autoload_paths << "#{Rails.root}/lib"
     # Initialize configuration defaults for originally generated Rails version.
