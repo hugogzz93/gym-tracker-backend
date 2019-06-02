@@ -3,6 +3,7 @@ module Types
     extend GraphqlRelationHelper
     has_many :intakes
     has_many :nutrient_intakes
+    has_many :nutrient_intake_goals
 
     field :id, ID, null: false
     field :name, String, null: false
