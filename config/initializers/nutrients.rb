@@ -1,5 +1,5 @@
 $nutrients = {
-    Water: {nutrient_id: "255", unit: "g"},
+  Water: {name: "Water", nutrient_id: "255", unit: "g"},
     Energy: {name:  "Energy", nutrient_id: "208", unit: "kcal"},
     Protein: {name:  "Protein", nutrient_id: "203", unit: "g"},
     Total: {name:  "Total lipid (fat)", nutrient_id: "204", unit: "g"},
@@ -26,3 +26,11 @@ $nutrients = {
     Cholesterol: {name:  "Cholesterol", nutrient_id: "601", unit: "mg"},
     VitaminE: {name:  "Vitamin E (alpha-tocopherol", nutrient_id: "323", unit: "mg"}
 }
+
+def find_nutrient_by_id(id)
+  $nutrients[$nutrients.keys.find {|n| $nutrients[n][:nutrient_id] == id}]
+end
+
+def find_nutrient_by_name(name)
+  $nutrients[$nutrients.keys.find {|n| $nutrients[n][:name] == name}]
+end

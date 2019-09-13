@@ -42,8 +42,11 @@ module USDA
       end
 
       def report(intakes)
+        return unless intakes.any?
         url = build_req_url(ids: intakes.map(&:ndbid).uniq)
         res = fetch(url)
+
+        hourly = group_by_hour(intakes)
 
         foods = res['foods'].map do |pack|
           food = pack['food'].tap do |food|
@@ -51,7 +54,17 @@ module USDA
           end
         end
 
-        { foods: foods, total: sum(foods) }
+        hourly.each do |hour, data|
+          data[:intakes].each do |intake|
+            food = foods.find {|f| f['desc']['ndbno'] == intake.ndbid}
+            energy = food['nutrients'].find { |n| n['nutrient_id'] == $nutrients[:Energy][:nutrient_id] }['value'].to_f
+            totalEnergy =  data[:nutrients][$nutrients[:Energy][:nutrient_id]]
+            hourly[hour][:nutrients][$nutrients[:Energy][:nutrient_id]] = totalEnergy ? totalEnergy + energy : energy
+          end
+        end
+
+
+        { foods: foods, total: sum(foods), hourly: hourly }
       end
 
       def fetch(url)
@@ -61,12 +74,21 @@ module USDA
         res
       end
 
+      def group_by_hour(intakes)
+        Hash.new.tap do |hours|
+          (0..23).each {|h| hours[h] = {nutrients: {}, intakes: []} }
+          intakes.each do |intake|
+            hours[intake.created_at.hour][:intakes] << intake
+          end
+        end
+      end
+
       def sum(foods)
         totals = {}
         foods.each do |food|
           food['nutrients'].each do |n|
             sum = totals[n['nutrient_id']]
-            # if(n['nutrient_id'] == '255') 
+            # if(n['nutrient_id'] == $nutrients[:Energy].nutrient_id) 
             #   debugger
             # end
             if sum
