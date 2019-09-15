@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class DateRangeType < Types::BaseInputObject
     argument :start, GraphQL::Types::ISO8601DateTime, required: true

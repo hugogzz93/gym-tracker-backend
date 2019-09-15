@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class NutrientIntakeInputType < Types::BaseInputObject
     argument :nutrient_id, ID, required: false

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mutations
   class IntakeOps < GraphQL::Schema::Object
     include GraphqlMutation
@@ -12,6 +14,5 @@ module Mutations
     #   #TODO: use context[:current_user]
     #   # Intake.create! input.to_h.merge({user: User.find_by({email: 'pinelo93@gmail.com'})})
     # end
-
   end
 end

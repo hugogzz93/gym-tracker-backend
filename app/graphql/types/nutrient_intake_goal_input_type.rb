@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class NutrientIntakeGoalInputType < Types::BaseInputObject
     argument :user_id, ID, required: false

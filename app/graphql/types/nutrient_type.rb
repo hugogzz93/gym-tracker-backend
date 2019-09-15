@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class NutrientType < Types::BaseObject
     field :nutrient_id, String, null: false

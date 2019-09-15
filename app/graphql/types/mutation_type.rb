@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class MutationType < Types::BaseObject
     IntakeGoalOps = GraphqlMutation.create_ops_for NutrientIntakeGoal
@@ -23,14 +25,13 @@ module Types
     end
 
     def nutrient_intake_goal(id: nil, nutrient_id: nil)
-      if(id)
+      if id
         NutrientIntakeGoal.find(id)
-      elsif(nutrient_id)
+      elsif nutrient_id
         User.first.nutrient_intake_goals.find_by(nutrient_id: nutrient_id)
       else
         NutrientIntakeOps
       end
     end
-
   end
 end

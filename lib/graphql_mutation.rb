@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support/concern'
 
 # Usage:
@@ -15,23 +17,20 @@ module GraphqlMutation
   extend ActiveSupport::Concern
 
   module MutationHelper
-
     @create = proc do |_, input, _ctx, model|
       model.create! input
     end
 
-    @update = proc do |instance, input, _ctx, model|
+    @update = proc do |instance, input, _ctx, _model|
       instance.update! input
       instance.reload
     end
 
     @destroy = proc do |instance|
-      begin
-        instance.destroy!
-        instance.id
-      rescue
-        nil
-      end
+      instance.destroy!
+      instance.id
+    rescue StandardError
+      nil
     end
 
     def self.create
@@ -47,7 +46,6 @@ module GraphqlMutation
     end
   end
 
-
   def self.create_ops_for(model)
     Class.new(GraphQL::Schema::Object) do
       include GraphqlMutation
@@ -56,9 +54,8 @@ module GraphqlMutation
   end
 
   included do
-
     def self.is_mutation_of(model)
-      self.class_eval do
+      class_eval do
         @model = model
 
         create = proc do |_, args, _ctx|
@@ -74,22 +71,22 @@ module GraphqlMutation
         end
 
         field :create, "Types::#{model.name}Type", null: false,
-            resolve: create do
+                                                   resolve: create do
           argument :input, "Types::#{model.name}InputType", required: true
         end
 
         field :update, "Types::#{model.name}Type", null: false,
-            resolve: update do
+                                                   resolve: update do
           argument :input, "Types::#{model.name}InputType", required: true
         end
 
-        field :destroy, [ GraphQL::Types::ID ], null: false, resolve: destroy
+        field :destroy, [GraphQL::Types::ID], null: false, resolve: destroy
       end
     end
 
     def self.is_batchable
       model = @model
-      self.class_eval do
+      class_eval do
         batch_create = proc do |_, args, _ctx|
           args[:inputs].map do |input|
             MutationHelper.create.call(_, input.to_h, _ctx, model)
@@ -103,9 +100,9 @@ module GraphqlMutation
         # batch_destroy = proc do |_, args, _ctx|
         # end
 
-        field :batch_create, [ "Types::#{model.name}Type" ], null: false,
-                resolve: batch_create do
-          argument :inputs, [ "Types::#{model.name}InputType" ], required: true
+        field :batch_create, ["Types::#{model.name}Type"], null: false,
+                                                           resolve: batch_create do
+          argument :inputs, ["Types::#{model.name}InputType"], required: true
         end
 
         # field :update, [ "Types::#{model.name}Type" ], null: false,

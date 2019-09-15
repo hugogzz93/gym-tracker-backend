@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module BaseOps
   def self.create_default_mutation(model)
     GraphQL::ObjectType.define do
-      name model.name + "Ops"
+      name model.name + 'Ops'
 
       create = proc do |_, args, _ctx|
         model.create! args.input.to_h

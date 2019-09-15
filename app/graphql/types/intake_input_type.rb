@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class IntakeInputType < Types::BaseInputObject
     argument :ndbid, ID, required: false

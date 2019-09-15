@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateNutrientIntakes < ActiveRecord::Migration[5.2]
   def change
     create_table :nutrient_intakes do |t|

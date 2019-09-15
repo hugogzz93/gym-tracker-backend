@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mutations
   class NutrientIntakeOps < GraphQL::Schema::Object
     include GraphqlMutation
@@ -18,6 +20,5 @@ module Mutations
     # def batch_create(inputs:)
     #   inputs.map { |input| NutrientIntake.create input.to_h }
     # end
-
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GraphqlRelationHelper
   def has_many(relation)
     model = relation.to_s.camelcase.singularize
@@ -5,7 +7,7 @@ module GraphqlRelationHelper
       argument :query, "Types::#{model}QueryType".constantize, required: false
     end
 
-    define_method relation do |req=nil|
+    define_method relation do |req = nil|
       if req
         query = req[:query].to_h
         query[:id] = query.delete(:ids) if query.key?(:ids)

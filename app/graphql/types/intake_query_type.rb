@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class IntakeQueryType < Types::BaseInputObject
     argument :id, ID, required: false
